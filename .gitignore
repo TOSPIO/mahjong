@@ -1,0 +1,15 @@
+*~
+*.py[cdo]
+\#*\#
+.\#*
+**/__pycache__
+.projectile
+**/test-reports
+*.swp
+
+# Code coverage
+htmlcov/
+.coverage
+
+# IPython Notebook
+*.ipynb
