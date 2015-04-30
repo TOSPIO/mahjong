@@ -1,0 +1,31 @@
+# -*- coding: utf-8 -*-
+
+"""
+Copyright 2014-2015 Ratina
+
+@author: Savor d'Isavano
+@date: 2015-04-30
+
+Rules test cases
+"""
+
+__author__ = "Savor d'Isavano"
+
+import unittest
+import rules
+
+
+class RulesTestCase(unittest.TestCase):
+    def test_sort_tiles(self):
+        tiles = [
+            'P1', 'S2', 'P8', 'P8', 'S6', 'W7', 'W6',
+            'M2', 'M5', 'M2', 'S5', 'W2', 'P7', 'P6'
+        ]
+        sorted_tiles = rules.sort_tiles(tiles)
+        self.assertEqual(
+            sorted_tiles,
+            [
+                'P1', 'P6', 'P7', 'P8', 'P8', 'S2', 'S5',
+                'S6', 'M2', 'M2', 'M5', 'W2', 'W6', 'W7'
+            ]
+        )
