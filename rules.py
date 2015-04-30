@@ -42,6 +42,7 @@ __author__ = "Savor d'Isavano"
 
 from copy import copy, deepcopy
 
+
 class Tile:
     _kind_order = ('P', 'S', 'M', 'W', 'D')
 
@@ -102,6 +103,7 @@ def is_psm(tile):
     '''
     return tile.kind in ('P', 'S', 'M')
 
+
 def is_jihai(tile):
     '''Check is a tile is a kazehai or sangenhai.
 
@@ -109,6 +111,7 @@ def is_jihai(tile):
     True/False
     '''
     return tile.kind in ('W', 'D')
+
 
 def _sort_key_func(tile):
     return _tiles.index(tile)
