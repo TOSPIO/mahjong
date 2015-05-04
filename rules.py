@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright 2014-2015 Ratina
+#
 
-"""
-Copyright 2014-2015 Ratina
+"""Mahjong rule definitions and checkers.
 
-@author: Savor d'Isavano
-@date: 2015-04-30
-
-Mahjong rule definitions and checkers.
 We employ the names defined in Japanese mahjong rules.
 
 To denote the 43 unique tiles, we use the following representations:
@@ -21,7 +19,7 @@ Rules:
 
 Term definitions:
 Jantou: a pair of identical tiles. e.g. ('P1', 'P1').
-Shuntsu: a meld of three suited tiles in sequence.
+nShuntsu: a meld of three suited tiles in sequence.
          e.g. ('M1', 'M2', 'M3')
 Koutsu: a meld of three identical tiles.
         e.g. ('M1', 'M1', 'M1')
@@ -38,9 +36,8 @@ Regular: four mentsu's and one jantou.
 Seven-pairs: Seven pairs.
 """
 
-__author__ = "Savor d'Isavano"
+from copy import deepcopy
 
-from copy import copy, deepcopy
 
 class Tile:
     _kind_order = ('P', 'S', 'M', 'W', 'D')
@@ -194,7 +191,7 @@ def _get_successor(tile):
     # if tile.kind == 'D':
     #     if 1 <= tile.number <= 2:
     #         return Tile('D', tile.number+1)
-        
+
     return None
 
 
