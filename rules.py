@@ -75,7 +75,7 @@ def make_tile(str_repr):
     kind = str_repr[0]
     number = int(str_repr[1:])
     return Tile(kind, number)
-    
+
 
 def make_tiles(*str_reprs):
     return tuple(make_tile(tile) for tile in str_reprs)
@@ -99,6 +99,7 @@ def is_psm(tile):
     '''
     return tile.kind in ('P', 'S', 'M')
 
+
 def is_jihai(tile):
     '''Check is a tile is a kazehai or sangenhai.
 
@@ -107,10 +108,11 @@ def is_jihai(tile):
     '''
     return tile.kind in ('W', 'D')
 
+
 def _sort_key_func(tile):
     return _tiles.index(tile)
 
-    
+
 def sort_tiles(tiles):
     return tuple(sorted(tiles))
 
@@ -138,12 +140,12 @@ def is_shuntsu(tiles):
     if not is_psm(tiles[0]):
         return False
 
-    if tiles[1].number - tiles[0].number == 1 and tiles[2].number - tiles[1].number == 1:
+    if tiles[1].number - tiles[0].number == 1 \
+       and tiles[2].number - tiles[1].number == 1:
         return True
-    
+
     return False
 
-    
 
 def is_koutsu(tiles):
     if len(tiles) != 3:
@@ -203,7 +205,8 @@ def _extract_successor(base, tiles):
     except ValueError:
         # Not found
         return None
-    return tiles[successor_idx], tiles[:successor_idx] + tiles[successor_idx+1:]
+    return tiles[successor_idx], \
+        tiles[:successor_idx] + tiles[successor_idx+1:]
 
 
 def _extract_identical(base, tiles):
@@ -211,6 +214,7 @@ def _extract_identical(base, tiles):
         return None
     if tiles[0] == base:
         return tiles[0], tiles[1:]
+
 
 def _check_ron_regular(tiles):
     '''Check for regular ron
@@ -227,7 +231,7 @@ def _check_ron_regular(tiles):
     ron_patterns = []
     _check_ron_regular_1(tiles_dict, sort_tiles(tiles), ron_patterns)
     return ron_patterns
-    
+
 
 def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
     '''Check for regular ron. Can be used with a small set of tiles.
