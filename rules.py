@@ -19,7 +19,7 @@ Rules:
 
 Term definitions:
 Jantou: a pair of identical tiles. e.g. ('P1', 'P1').
-nShuntsu: a meld of three suited tiles in sequence.
+Shuntsu: a meld of three suited tiles in sequence.
          e.g. ('M1', 'M2', 'M3')
 Koutsu: a meld of three identical tiles.
         e.g. ('M1', 'M1', 'M1')
@@ -28,8 +28,10 @@ Kantsu: a meld of four identical tiles (fuuro only).
 Mentsu: a shuntsu, koutsu or kantsu.
 Fuuro: A mentsu place aside of hand tiles.
 
-Ron: A player wins the game if he `ron`s.
-     His hand must match one of the ron patterns for him to ron.
+Agari: A player wins the game if he `agari`s.
+     His hand must match one of the agari patterns for him to ron.
+Tsumo: A player agari's with the last tile drawn by himself.
+Ron: A player agari's with the other player's discard.
 
 Ron patterns:
 Regular: four mentsu's and one jantou.
@@ -216,25 +218,24 @@ def _extract_identical(base, tiles):
         return tiles[0], tiles[1:]
 
 
-def _check_ron_regular(tiles):
-    '''Check for regular ron
+def _check_agari_regular(tiles):
+    '''Check for regular agari.
 
     Arguments:
     tiles: tiles as a list of string defined in _tiles
-
     '''
     tiles_dict = {
         'jantou': [],
         'shuntsu': [],
         'koutsu': [],
     }
-    ron_patterns = []
-    _check_ron_regular_1(tiles_dict, sort_tiles(tiles), ron_patterns)
-    return ron_patterns
+    agari_patterns = []
+    _check_agari_regular_1(tiles_dict, sort_tiles(tiles), agari_patterns)
+    return agari_patterns
 
 
-def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
-    '''Check for regular ron. Can be used with a small set of tiles.
+def _check_agari_regular_1(tiles_dict, rest_tiles, agari_patterns):
+    '''Check for regular agari. Can be used with a small set of tiles.
     (i.e. With fuuros excluded.)
 
     Arguments:
@@ -250,9 +251,9 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
     tiles_dict = deepcopy(tiles_dict)
 
     if not rest_tiles:
-        # All other tiles are valid mentsu's. A jantou determines a ron hand.
+        # All other tiles are valid mentsu's. A jantou determines a agari hand.
         if len(tiles_dict['jantou']) == 1:
-            ron_patterns.append(tiles_dict)
+            agari_patterns.append(tiles_dict)
             return True
         return False
 
@@ -271,7 +272,7 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
             c, _rest_tiles = c
             meld.append(c)
             tiles_dict['koutsu'].append(tuple(meld))
-            _check_ron_regular_1(tiles_dict, _rest_tiles, ron_patterns)
+            _check_agari_regular_1(tiles_dict, _rest_tiles, agari_patterns)
             tiles_dict['koutsu'].pop()
         else:
             # Got a jantou
@@ -280,7 +281,7 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
                 pass
             else:
                 tiles_dict['jantou'].append(tuple(meld))
-                _check_ron_regular_1(tiles_dict, _rest_tiles, ron_patterns)
+                _check_agari_regular_1(tiles_dict, _rest_tiles, agari_patterns)
                 tiles_dict['jantou'].pop()
 
     del meld[1:]
@@ -296,5 +297,5 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
             c, _rest_tiles = c
             meld.append(c)
             tiles_dict['shuntsu'].append(tuple(meld))
-            _check_ron_regular_1(tiles_dict, _rest_tiles, ron_patterns)
+            _check_agari_regular_1(tiles_dict, _rest_tiles, agari_patterns)
             tiles_dict['shuntsu'].pop()
