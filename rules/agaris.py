@@ -44,12 +44,14 @@ class AgariPattern(metaclass=ABCMeta):
         pass
 
     def check_agari(self):
-        return self._check_agari() + \
-            (
-                hasattr(self, '_successor') and
-                self._successor.check_agari() or
-                []
-            )
+        return [
+            (self.__pattern_name__, m)
+            for m in self._check_agari()
+        ] + (
+            hasattr(self, '_successor') and
+            self._successor.check_agari() or
+            []
+        )
 
     def __rshift__(self, other):
         self._successor = other
@@ -63,6 +65,8 @@ class AgariPattern(metaclass=ABCMeta):
 
 
 class RegularAgariPattern(AgariPattern):
+    __pattern_name__ = 'regular'
+
     @classmethod
     def _check_agari_regular(cls, tiles):
         '''Check for regular agari.
@@ -155,3 +159,33 @@ class RegularAgariPattern(AgariPattern):
 
     def _check_agari(self):
         return self._check_agari_regular(self._tiles)
+
+
+# The definition of seven-pair pattern differs across regions.
+# In typical Japanese rules, no two identical pairs, e.g. P1P1 P1P1
+# are allowed. However in many Chinese rules it is totally valid.
+
+class SevenPairPattern(AgariPattern):
+    '''This is the pattern that disregard identical pairs (loose).'''
+    __pattern_name__ = 'sevenpair'
+
+    def __init__(self, is_strict=False):
+        self.is_strict = is_strict
+
+    def _check_agari(self):
+        tiles = sort_tiles(self._tiles)
+        if len(tiles) % 2:
+            # No leaving single tile is allowed.
+            return []
+
+        chunks = list(zip(tiles[::2], tiles[1::2]))
+        for t in chunks:
+            if t[0] != t[1]:
+                return []
+
+        if not self.is_strict:
+            return [{'pairs': chunks}]
+        else:
+            for idx, chunk in enumerate(chunks[:-1]):
+                if chunk[0] == chunks[idx+1][0]:
+                    return []

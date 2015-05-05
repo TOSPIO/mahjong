@@ -20,8 +20,8 @@ class EssentialTestCase(unittest.TestCase):
         self.assertEqual(
             sorted_tiles,
             _ess.make_tiles(
-                'P1', 'P6', 'P7', 'P8', 'P8', 'S2', 'S5',
-                'S6', 'M2', 'M2', 'M5', 'W2', 'D2', 'D3'
+                'M2', 'M2', 'M5', 'P1', 'P6', 'P7', 'P8',
+                'P8', 'S2', 'S5', 'S6', 'W2', 'D2', 'D3'
             )
         )
 

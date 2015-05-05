@@ -21,9 +21,9 @@ def make_tiles(*str_reprs):
 
 # All tiles
 _tiles = make_tiles(
+    'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',
     'P1', 'P2', 'P3', 'P4', 'P5', 'P6', 'P7', 'P8', 'P9',
     'S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9',
-    'M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9',
     'W1', 'W2', 'W3', 'W4',
     'D1', 'D2', 'D3',
 )
@@ -52,7 +52,7 @@ def _sort_key_func(tile):
 
 
 def sort_tiles(tiles):
-    return tuple(sorted(tiles))
+    return tuple(sorted(tiles, key=_sort_key_func))
 
 
 def is_jantou(tiles):
