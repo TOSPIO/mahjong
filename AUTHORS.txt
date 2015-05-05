@@ -1,0 +1,10 @@
+Main Authors
+=============
+
+Savor d'Isavano (@KenetJervet) <kj@ratina.org>
+
+Code Contributors
+=================
+
+
+Note: (@user) means a GitHub user name.

@@ -3,6 +3,5 @@
 # Copyright 2014-2015 Ratina
 #
 
-"""The mahjong engine.
+"""Test cases for rules package.
 """
-
