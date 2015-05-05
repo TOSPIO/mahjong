@@ -60,11 +60,14 @@ class AgariPattern(metaclass=ABCMeta):
 
     def __rrshift__(self, other):
         # The left operand must be a list of tiles.
-        self._tiles = other
+        # Sort it so we don't sort it in all pattern checkers.
+        self._tiles = sort_tiles(other)
         return self
 
 
 class RegularAgariPattern(AgariPattern):
+    '''Regular 3-3-3-3-2 pattern.'''
+
     __pattern_name__ = 'regular'
 
     @classmethod
@@ -81,7 +84,7 @@ class RegularAgariPattern(AgariPattern):
         }
         agari_patterns = []
         cls._check_agari_regular_1(
-            tiles_dict, sort_tiles(tiles), agari_patterns
+            tiles_dict, tiles, agari_patterns
         )
         return agari_patterns
 
@@ -161,19 +164,20 @@ class RegularAgariPattern(AgariPattern):
         return self._check_agari_regular(self._tiles)
 
 
-# The definition of seven-pair pattern differs across regions.
-# In typical Japanese rules, no two identical pairs, e.g. P1P1 P1P1
-# are allowed. However in many Chinese rules it is totally valid.
-
 class SevenPairPattern(AgariPattern):
-    '''This is the pattern that disregard identical pairs (loose).'''
+    '''Seven-pair(七対子) pattern.
+
+    The definition of seven-pair pattern differs across regions.
+    In typical Japanese rules, no two identical pairs, e.g. P1P1 P1P1
+    are allowed. However in many Chinese rules it is totally valid.
+    '''
     __pattern_name__ = 'sevenpair'
 
     def __init__(self, is_strict=False):
         self.is_strict = is_strict
 
     def _check_agari(self):
-        tiles = sort_tiles(self._tiles)
+        tiles = self._tiles
         if len(tiles) % 2:
             # No leaving single tile is allowed.
             return []
@@ -189,3 +193,46 @@ class SevenPairPattern(AgariPattern):
             for idx, chunk in enumerate(chunks[:-1]):
                 if chunk[0] == chunks[idx+1][0]:
                     return []
+
+
+class GokushiPattern(AgariPattern):
+    '''Gokushimuso pattern.
+
+    M1 M9 P1 P9 S1 S9 W1 W2 W3 W4 D1 D2 D3 plus any of those 13.
+    '''
+
+    __pattern_name__ = 'gokushi'
+
+    def _check_agari(self):
+        tiles = self._tiles
+        gokushi_matches = make_tiles(
+            'M1', 'M9', 'P1', 'P9', 'S1', 'S9',
+            'W1', 'W2', 'W3', 'W4', 'D1', 'D2', 'D3'
+        )
+        walk_idx = idx = 0
+        jantou = None
+        if len(self._tiles) != 14:
+            return []
+
+        while idx < 13:
+            if tiles[idx] == tiles[idx+1]:
+                if jantou is not None:
+                    # Got more than one jantou!
+                    return []
+                jantou = tiles[idx]
+                idx += 1
+
+            if tiles[idx] != gokushi_matches[walk_idx]:
+                # Fail
+                return []
+
+            idx += 1
+            walk_idx += 1
+        else:
+            if jantou is None:
+                return []
+            else:
+                return [{
+                    "jantou": jantou,
+                    "gokushi": tuple(gokushi_matches)
+                }]
