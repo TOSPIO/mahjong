@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
+#
+# Copyright 2014-2015 Ratina
+#
 
-"""
-Copyright 2014-2015 Ratina
+"""Mahjong rule definitions and checkers.
 
-@author: Savor d'Isavano
-@date: 2015-04-30
-
-Mahjong rule definitions and checkers.
 We employ the names defined in Japanese mahjong rules.
 
 To denote the 43 unique tiles, we use the following representations:
@@ -30,17 +28,18 @@ Kantsu: a meld of four identical tiles (fuuro only).
 Mentsu: a shuntsu, koutsu or kantsu.
 Fuuro: A mentsu place aside of hand tiles.
 
-Ron: A player wins the game if he `ron`s.
-     His hand must match one of the ron patterns for him to ron.
+Agari: A player wins the game if he `agari`s.
+     His hand must match one of the agari patterns for him to ron.
+Tsumo: A player agari's with the last tile drawn by himself.
+Ron: A player agari's with the other player's discard.
 
 Ron patterns:
 Regular: four mentsu's and one jantou.
 Seven-pairs: Seven pairs.
 """
 
-__author__ = "Savor d'Isavano"
+from copy import deepcopy
 
-from copy import copy, deepcopy
 
 
 class Tile:
@@ -79,7 +78,7 @@ def make_tile(str_repr):
     kind = str_repr[0]
     number = int(str_repr[1:])
     return Tile(kind, number)
-    
+
 
 def make_tiles(*str_reprs):
     return tuple(make_tile(tile) for tile in str_reprs)
@@ -116,7 +115,7 @@ def is_jihai(tile):
 def _sort_key_func(tile):
     return _tiles.index(tile)
 
-    
+
 def sort_tiles(tiles):
     return tuple(sorted(tiles))
 
@@ -144,12 +143,12 @@ def is_shuntsu(tiles):
     if not is_psm(tiles[0]):
         return False
 
-    if tiles[1].number - tiles[0].number == 1 and tiles[2].number - tiles[1].number == 1:
+    if tiles[1].number - tiles[0].number == 1 \
+       and tiles[2].number - tiles[1].number == 1:
         return True
-    
+
     return False
 
-    
 
 def is_koutsu(tiles):
     if len(tiles) != 3:
@@ -197,7 +196,7 @@ def _get_successor(tile):
     # if tile.kind == 'D':
     #     if 1 <= tile.number <= 2:
     #         return Tile('D', tile.number+1)
-        
+
     return None
 
 
@@ -209,7 +208,8 @@ def _extract_successor(base, tiles):
     except ValueError:
         # Not found
         return None
-    return tiles[successor_idx], tiles[:successor_idx] + tiles[successor_idx+1:]
+    return tiles[successor_idx], \
+        tiles[:successor_idx] + tiles[successor_idx+1:]
 
 
 def _extract_identical(base, tiles):
@@ -218,25 +218,25 @@ def _extract_identical(base, tiles):
     if tiles[0] == base:
         return tiles[0], tiles[1:]
 
-def _check_ron_regular(tiles):
-    '''Check for regular ron
+
+def _check_agari_regular(tiles):
+    '''Check for regular agari.
 
     Arguments:
     tiles: tiles as a list of string defined in _tiles
-
     '''
     tiles_dict = {
         'jantou': [],
         'shuntsu': [],
         'koutsu': [],
     }
-    ron_patterns = []
-    _check_ron_regular_1(tiles_dict, sort_tiles(tiles), ron_patterns)
-    return ron_patterns
-    
+    agari_patterns = []
+    _check_agari_regular_1(tiles_dict, sort_tiles(tiles), agari_patterns)
+    return agari_patterns
 
-def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
-    '''Check for regular ron. Can be used with a small set of tiles.
+
+def _check_agari_regular_1(tiles_dict, rest_tiles, agari_patterns):
+    '''Check for regular agari. Can be used with a small set of tiles.
     (i.e. With fuuros excluded.)
 
     Arguments:
@@ -252,9 +252,9 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
     tiles_dict = deepcopy(tiles_dict)
 
     if not rest_tiles:
-        # All other tiles are valid mentsu's. A jantou determines a ron hand.
+        # All other tiles are valid mentsu's. A jantou determines a agari hand.
         if len(tiles_dict['jantou']) == 1:
-            ron_patterns.append(tiles_dict)
+            agari_patterns.append(tiles_dict)
             return True
         return False
 
@@ -273,7 +273,7 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
             c, _rest_tiles = c
             meld.append(c)
             tiles_dict['koutsu'].append(tuple(meld))
-            _check_ron_regular_1(tiles_dict, _rest_tiles, ron_patterns)
+            _check_agari_regular_1(tiles_dict, _rest_tiles, agari_patterns)
             tiles_dict['koutsu'].pop()
         else:
             # Got a jantou
@@ -282,7 +282,7 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
                 pass
             else:
                 tiles_dict['jantou'].append(tuple(meld))
-                _check_ron_regular_1(tiles_dict, _rest_tiles, ron_patterns)
+                _check_agari_regular_1(tiles_dict, _rest_tiles, agari_patterns)
                 tiles_dict['jantou'].pop()
 
     del meld[1:]
@@ -298,5 +298,5 @@ def _check_ron_regular_1(tiles_dict, rest_tiles, ron_patterns):
             c, _rest_tiles = c
             meld.append(c)
             tiles_dict['shuntsu'].append(tuple(meld))
-            _check_ron_regular_1(tiles_dict, _rest_tiles, ron_patterns)
+            _check_agari_regular_1(tiles_dict, _rest_tiles, agari_patterns)
             tiles_dict['shuntsu'].pop()

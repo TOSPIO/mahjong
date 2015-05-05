@@ -125,12 +125,12 @@ class RulesTestCase(unittest.TestCase):
         tiles = tuple()
         self.assertFalse(r.is_mentsu(tiles))
 
-    def test_check_ron_regular(self):
+    def test_check_agari_regular(self):
         tiles = r.make_tiles(
             'P1', 'P1', 'P1', 'P2', 'P2', 'P2', 'P3', 'P3', 'P3',
             'P4', 'P4', 'P4', 'D1', 'D1'
         )
-        result_list = r._check_ron_regular(tiles)
+        result_list = r._check_agari_regular(tiles)
 
         result1 = {
             'shuntsu': [
