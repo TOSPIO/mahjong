@@ -86,19 +86,19 @@ class RulesTestCase(unittest.TestCase):
 
         self.assertEqual(len(result_list), 0)
 
-    def test_gokushi(self):
+    def test_kokushi(self):
         tiles = make_tiles(
             'M1', 'M9', 'P1', 'P9', 'S1', 'S9',
             'W1', 'W2', 'W3', 'W4', 'D1', 'D2', 'D3', 'M1'
         )
 
         result_list = (
-            tiles >> GokushiPattern()
+            tiles >> KokushiPattern()
         ).check_agari()
 
-        result1 = ('gokushi', {
+        result1 = ('kokushi', {
             'jantou': 'M1',
-            'gokushi': (
+            'kokushi': (
                 'M1', 'M9', 'P1', 'P9', 'S1', 'S9',
                 'W1', 'W2', 'W3', 'W4', 'D1', 'D2', 'D3'
             )
@@ -111,12 +111,12 @@ class RulesTestCase(unittest.TestCase):
         )
 
         result_list = (
-            tiles >> GokushiPattern()
+            tiles >> KokushiPattern()
         ).check_agari()
 
-        result2 = ('gokushi', {
+        result2 = ('kokushi', {
             'jantou': 'D3',
-            'gokushi': (
+            'kokushi': (
                 'M1', 'M9', 'P1', 'P9', 'S1', 'S9',
                 'W1', 'W2', 'W3', 'W4', 'D1', 'D2', 'D3'
             )
@@ -129,7 +129,7 @@ class RulesTestCase(unittest.TestCase):
         )
 
         result_list = (
-            tiles >> GokushiPattern()
+            tiles >> KokushiPattern()
         ).check_agari()
 
         self.assertEqual(len(result_list), 0)

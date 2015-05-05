@@ -195,17 +195,17 @@ class SevenPairPattern(AgariPattern):
                     return []
 
 
-class GokushiPattern(AgariPattern):
-    '''Gokushimuso pattern.
+class KokushiPattern(AgariPattern):
+    '''Kokushimuso pattern.
 
     M1 M9 P1 P9 S1 S9 W1 W2 W3 W4 D1 D2 D3 plus any of those 13.
     '''
 
-    __pattern_name__ = 'gokushi'
+    __pattern_name__ = 'kokushi'
 
     def _check_agari(self):
         tiles = self._tiles
-        gokushi_matches = make_tiles(
+        kokushi_matches = make_tiles(
             'M1', 'M9', 'P1', 'P9', 'S1', 'S9',
             'W1', 'W2', 'W3', 'W4', 'D1', 'D2', 'D3'
         )
@@ -222,7 +222,7 @@ class GokushiPattern(AgariPattern):
                 jantou = tiles[idx]
                 idx += 1
 
-            if tiles[idx] != gokushi_matches[walk_idx]:
+            if tiles[idx] != kokushi_matches[walk_idx]:
                 # Fail
                 return []
 
@@ -234,5 +234,5 @@ class GokushiPattern(AgariPattern):
             else:
                 return [{
                     "jantou": jantou,
-                    "gokushi": tuple(gokushi_matches)
+                    "kokushi": tuple(kokushi_matches)
                 }]
